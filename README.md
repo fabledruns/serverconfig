@@ -58,12 +58,11 @@ Then restart Docker:
 
 ### 5. Clone the repo
 
-    git clone https://github.com/fabledruns/serverconfig.git 
-    cd serverconfig/server/pelican
+    git clone https://github.com/fabledruns/serverconfig.git root
+    cd ./root/minecraftserver/pelican
 
 ### 6. Set up the Pelican environment
 
-    cp .env.example .env
     nano .env
 
 At minimum, update these two values:
