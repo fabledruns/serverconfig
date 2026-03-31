@@ -56,10 +56,21 @@ Then restart Docker:
 
     sudo systemctl restart docker
 
-### 5. Clone the repo
+### 5. Clone the repo & Run Minecraft
 
     git clone https://github.com/fabledruns/serverconfig.git root
-    cd ./root/minecraftserver/pelican
+    cd ./root/minecraftserver/
+
+In the minecraftserver folder, run:
+
+    nano docker-compose.yml
+
+This will show your Minecraft server installation config like Version, Server Software, etc. and change them to your liking.
+After configuring, run:
+
+    docker compose up
+
+This will pull the Minecraft server image and will start the server. After the "Done!" message, open Minecraft and enter you VPS' IP Address or Domain name to join the Minecraft server. 
 
 ### 6. Set up the Pelican environment
 
@@ -73,6 +84,17 @@ At minimum, update these two values:
 ### 7. Start the Pelican panel
 
     docker compose up -d
+
+Generate a new APP_KEY:
+
+    docker compose run --rm -e APP_URL=http://localhost/ panel php artisan key:generate --show
+
+Copy the key and paste it in APP_KEY in .env .
+
+Now, run migrations inside the container:
+
+    docker compose run --rm panel php artisan migrate --force
+    docker compose run --rm panel php artisan db:seed --force # run this command if you want seeded data
 
 ### 8. Open the panel
 
