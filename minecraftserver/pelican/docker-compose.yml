@@ -1,0 +1,71 @@
+x-common:
+  panel:
+    &panel-environment
+    APP_URL: "http://<your-vps-ip-or-domain>" # the URL to access the panel, used for generating links in emails and such
+    LE_EMAIL: "USEYOUROWNEMAILHERE@example.com" # email to be used for let's encrypt certificates
+    APP_DEBUG: "false"
+    APP_ENV: "production"
+
+    # BEHIND_PROXY: true # uncomment to run behind a proxy
+    # TRUSTED_PROXIES: 127.0.0.1,172.17.0.1,172.20.0.1 # defaults are for local proxies
+
+  mail:
+    &mail-environment
+    MAIL_DRIVER: "log"
+    # MAIL_HOST: ""
+    # MAIL_PORT: ""
+    # MAIL_FROM: ""
+    # MAIL_USERNAME: ""
+    # MAIL_PASSWORD: ""
+    # MAIL_SCHEME: ""
+
+# ------------------------------------------------------------------------------------------
+# DANGER ZONE BELOW
+#
+# The remainder of this file likely does not need to be changed. Please only make modifications
+# below if you understand what you are doing.
+
+services:
+  panel:
+    image: ghcr.io/pelican-dev/panel:latest
+    build: .
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pelican-data:/pelican-data
+      - pelican-logs:/var/www/html/storage/logs
+    env_file:
+      - .env
+    environment:
+      <<: [*panel-environment, *mail-environment]
+      XDG_DATA_HOME: /pelican-data
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    networks:
+      - default
+    volumes:
+      - redis-data:/data
+  mariadb:
+    image: mariadb:10.11
+    restart: unless-stopped
+    networks:
+      - default
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: panel
+      MYSQL_USER: pelican
+      MYSQL_PASSWORD: changeme # change this password before using in production
+    volumes:
+      - mariadb-data:/var/lib/mysql
+volumes:
+  pelican-data:
+  pelican-logs:
+  redis-data:
+  mariadb-data:
