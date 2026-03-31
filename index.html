@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build a Better Minecraft Server</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+<style>
+  h1, h2, h3, h4, h5, h6,
+  .section-title,
+  .section-num,
+  .toc-num,
+  .step-num,
+  .footer-brand,
+  .cover h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 700;
+  }
+
+  :root {
+    --bg: #0c0c0e;
+    --surface: #111114;
+    --border: #1e1e24;
+    --border-hi: #2e2e38;
+    --purple: #8b5cf6;
+    --text: #e4e4f0;
+    --muted: #5a5a72;
+    --sub: #9090a8;
+    --code-bg: #0a0a0d;
+    --code-text: #7dd3b0;
+    --green: #10b981;
+    --red: #f43f5e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cover {
+    min-height: 100vh;
+    padding: 100px 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cover-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 28px;
+  }
+
+  .cover h1 {
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    font-size: clamp(36px, 6.5vw, 80px);
+    font-weight: 700;
+    line-height: 1.0;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+
+  .cover h1 em {
+    font-style: normal;
+    color: var(--purple);
+  }
+
+  .cover-sub {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 440px;
+    margin-bottom: 64px;
+    line-height: 1.8;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .meta-item {
+    padding: 16px 28px;
+    border-right: 1px solid var(--border);
+  }
+
+  .meta-item:last-child { border-right: none; }
+
+  .meta-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .meta-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .toc-page {
+    padding: 80px 10%;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 32px;
+    display: block;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--bg);
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s;
+  }
+
+  .toc-item:hover { background: var(--surface); }
+
+  .toc-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--purple);
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    min-width: 26px;
+  }
+
+  .toc-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sub);
+  }
+
+  .section {
+    padding: 88px 10%;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 64px;
+    align-items: start;
+  }
+
+  .section-num {
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    font-size: clamp(20px, 2.8vw, 32px);
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.85;
+    font-weight: 400;
+    padding-top: 6px;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .step-num {
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--border-hi);
+    padding-top: 3px;
+    text-align: right;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.8;
+    font-weight: 400;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 18px 22px;
+    margin: 12px 0;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--code-text);
+    line-height: 1.9;
+    white-space: pre;
+  }
+
+  .code-block .comment { color: var(--border-hi); }
+  .code-block .key { color: #a78bfa; }
+  .code-block .val { color: var(--code-text); }
+
+  .code-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    color: #a78bfa;
+  }
+
+  .note {
+    border: 1px solid #064e3b;
+    background: #022c22;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: #6ee7b7;
+    margin: 14px 0;
+    line-height: 1.8;
+  }
+
+  .note strong { color: var(--green); font-weight: 600; }
+
+  .warn {
+    border: 1px solid #881337;
+    background: #1f0714;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: #fda4af;
+    margin: 14px 0;
+    line-height: 1.8;
+  }
+
+  .warn strong { color: var(--red); }
+
+  .bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 400;
+  }
+
+  .bullet-list li::before {
+    content: '—';
+    color: var(--border-hi);
+    flex-shrink: 0;
+    line-height: 1.7;
+  }
+
+  .bullet-list li strong { color: var(--sub); font-weight: 500; }
+
+  .cmd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 12px 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .cmd-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 12px 18px;
+    background: var(--code-bg);
+  }
+
+  .cmd-row code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    color: var(--code-text);
+    flex-shrink: 0;
+  }
+
+  .cmd-row span {
+    font-size: 11px;
+    color: var(--border-hi);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+
+  th {
+    background: var(--surface);
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+    line-height: 1.7;
+    font-size: 12px;
+  }
+
+  td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--sub);
+    font-size: 11px;
+  }
+
+  tr:hover td { background: var(--surface); }
+
+  .footer {
+    padding: 32px 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-brand {
+    font-family: 'Unbounded', 'Arial Black', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--border-hi);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .footer-info {
+    font-size: 11px;
+    color: var(--border-hi);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    .cover, .toc-page, .section { padding-left: 6%; padding-right: 6%; }
+    .section-header { grid-template-columns: 1fr; gap: 16px; }
+    .cover-meta { flex-wrap: wrap; }
+    .meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .meta-item:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-eyebrow">Video Reference Guide</div>
+  <h1>Build a Better<br><em>Minecraft</em><br>Server</h1>
+  <p class="cover-sub">All the commands and config for the full setup — from Docker install to Purpur optimizations.</p>
+  <div class="cover-meta">
+    <div class="meta-item"><span class="meta-label">OS</span><span class="meta-value">Ubuntu 24.04 LTS</span></div>
+    <div class="meta-item"><span class="meta-label">Server</span><span class="meta-value">Purpur 1.21.11</span></div>
+    <div class="meta-item"><span class="meta-label">Panel</span><span class="meta-value">Pelican Panel</span></div>
+    <div class="meta-item"><span class="meta-label">By</span><span class="meta-value">FabledRuns</span></div>
+  </div>
+</div>
+
+<div class="toc-page">
+  <span class="label">Contents</span>
+  <div class="toc-grid">
+    <a href="#s0" class="toc-item"><span class="toc-num">00</span><span class="toc-title">Prerequisites</span></a>
+    <a href="#s1" class="toc-item"><span class="toc-num">01</span><span class="toc-title">Install Docker</span></a>
+    <a href="#s2" class="toc-item"><span class="toc-num">02</span><span class="toc-title">Purpur (Raw Docker)</span></a>
+    <a href="#s3" class="toc-item"><span class="toc-num">03</span><span class="toc-title">Pelican Panel</span></a>
+    <a href="#s4" class="toc-item"><span class="toc-num">04</span><span class="toc-title">Wings Daemon</span></a>
+    <a href="#s5" class="toc-item"><span class="toc-num">05</span><span class="toc-title">Create Server in Panel</span></a>
+    <a href="#s6" class="toc-item"><span class="toc-num">06</span><span class="toc-title">Optimizations</span></a>
+  </div>
+</div>
+
+<div class="section" id="s0">
+  <div class="section-header">
+    <div><span class="section-num">00</span><div class="section-title">Prerequisites</div></div>
+    <div class="section-desc">What you need before running any of these commands.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Server Requirements</div>
+        <ul class="bullet-list">
+          <li><strong>RAM</strong> — 4GB minimum, 8GB preferred</li>
+          <li><strong>CPU</strong> — 2–4 cores</li>
+          <li><strong>Disk</strong> — 30GB+ free</li>
+          <li><strong>OS</strong> — Ubuntu Server 24.04 LTS</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Find Your Server IP</div>
+        <div class="step-desc">You'll need this throughout the entire guide.</div>
+        <div class="code-block"><pre>ip a</pre></div>
+        <div class="note"><strong>Note —</strong> Look for the <code>inet</code> address under <code>ens3</code> or <code>eth0</code>. Write it down.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s1">
+  <div class="section-header">
+    <div><span class="section-num">01</span><div class="section-title">Install Docker</div></div>
+    <div class="section-desc">Use the official apt repo. Don't use snap or the default apt package — both are outdated and will cause issues.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Update the system</div>
+        <div class="code-block"><pre>sudo apt update && sudo apt upgrade -y</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Add Docker's official repo</div>
+        <div class="code-block"><pre>sudo apt install -y ca-certificates curl gnupg
+
+sudo install -m 0755 -d /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Enable on boot</div>
+        <div class="code-block"><pre>sudo systemctl enable docker
+sudo systemctl start docker</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">Fix Docker DNS</div>
+        <div class="code-block"><pre>sudo nano /etc/docker/daemon.json</pre></div>
+        <div class="step-desc">Paste:</div>
+        <div class="code-block"><pre>{
+  "dns": ["1.1.1.1", "8.8.8.8"]
+}</pre></div>
+        <div class="code-block"><pre>sudo systemctl restart docker</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <div class="step-title">Optional — run Docker without sudo</div>
+        <div class="code-block"><pre>sudo usermod -aG docker $USER
+newgrp docker</pre></div>
+        <div class="note"><strong>Note —</strong> <code>newgrp</code> applies the change in the current session. Log out and back in to make it permanent.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s2">
+  <div class="section-header">
+    <div><span class="section-num">02</span><div class="section-title">Purpur Raw Docker</div></div>
+    <div class="section-desc">Run a Minecraft server with just Docker Compose — no panel. Worth understanding before moving to Pelican.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Clone the repo</div>
+        <div class="code-block"><pre>git clone https://github.com/fabledruns/serverconfig.git root
+cd root/minecraftserver</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">docker-compose.yml</div>
+        <div class="code-block"><pre><span class="key">services:</span>
+  <span class="key">mc:</span>
+    <span class="key">image:</span> <span class="val">itzg/minecraft-server</span>
+    <span class="key">container_name:</span> <span class="val">minecraft</span>
+    <span class="key">restart:</span> <span class="val">unless-stopped</span>
+    <span class="key">environment:</span>
+      <span class="key">EULA:</span> <span class="val">"TRUE"</span>
+      <span class="key">TYPE:</span> <span class="val">"PURPUR"</span>
+      <span class="key">VERSION:</span> <span class="val">"1.21.11"</span>
+      <span class="key">MEMORY:</span> <span class="val">"4G"</span>
+      <span class="key">ONLINE_MODE:</span> <span class="val">"false"</span>   <span class="comment"># disable Mojang auth for local play</span>
+    <span class="key">ports:</span>
+      - <span class="val">"25565:25565"</span>
+    <span class="key">volumes:</span>
+      - <span class="val">./data:/data</span></pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Start and watch logs</div>
+        <div class="code-block"><pre>docker compose up -d
+docker logs -f minecraft</pre></div>
+        <div class="note"><strong>Wait for —</strong> "Done! For help, type "help"". Press Ctrl+C to exit the log tail.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">Useful commands</div>
+        <div class="cmd-list">
+          <div class="cmd-row"><code>docker compose stop</code><span>stop the server</span></div>
+          <div class="cmd-row"><code>docker compose start</code><span>start it again</span></div>
+          <div class="cmd-row"><code>docker compose down</code><span>stop + remove container (data stays)</span></div>
+          <div class="cmd-row"><code>docker exec -it minecraft rcon-cli</code><span>interactive server console</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <div class="step-title">Key server.properties settings</div>
+        <div class="step-desc"><code>nano data/server.properties</code></div>
+        <table>
+          <tr><th>Setting</th><th>What it does</th></tr>
+          <tr><td>view-distance</td><td>Chunks sent to the client. Lower = less bandwidth.</td></tr>
+          <tr><td>simulation-distance</td><td>Chunks that run game logic. Lower = less CPU.</td></tr>
+          <tr><td>max-players</td><td>Player cap.</td></tr>
+          <tr><td>motd</td><td>Server description in the server list.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s3">
+  <div class="section-header">
+    <div><span class="section-num">03</span><div class="section-title">Pelican Panel</div></div>
+    <div class="section-desc">Pelican is an actively maintained Docker-native fork of Pterodactyl. The UI is nearly identical to what you've seen in most tutorials.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Navigate to Pelican directory</div>
+        <div class="code-block"><pre>cd root/minecraftserver/pelican
+cp .env.example .env
+nano .env</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Edit .env</div>
+        <div class="code-block"><pre><span class="key">APP_URL</span>=<span class="val">http://YOUR_SERVER_IP</span>     <span class="comment"># no trailing slash</span>
+<span class="key">APP_TIMEZONE</span>=<span class="val">Asia/Kolkata</span>
+<span class="key">DB_PASSWORD</span>=<span class="val">your_strong_password</span>
+<span class="key">CACHE_DRIVER</span>=<span class="val">redis</span>
+<span class="key">SESSION_DRIVER</span>=<span class="val">redis</span>
+<span class="key">QUEUE_DRIVER</span>=<span class="val">redis</span></pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Start the panel</div>
+        <div class="code-block"><pre>docker compose up -d</pre></div>
+        <div class="note"><strong>Note —</strong> Wait 30–60 seconds before opening the URL. Containers need time to initialize.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">Run migrations and create admin</div>
+        <div class="code-block"><pre>docker compose exec panel php artisan migrate --force --seed
+docker compose exec panel php artisan p:user:make</pre></div>
+        <div class="step-desc">Set admin to <strong>yes</strong> when prompted.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <div class="step-title">Open the panel</div>
+        <div class="code-block"><pre>http://YOUR_SERVER_IP</pre></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s4">
+  <div class="section-header">
+    <div><span class="section-num">04</span><div class="section-title">Wings Daemon</div></div>
+    <div class="section-desc">Wings is what actually runs game servers. It talks to the panel via API token and manages Docker containers on the host.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Install Wings binary</div>
+        <div class="code-block"><pre>sudo mkdir -p /etc/pterodactyl
+
+sudo curl -L https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64 \
+  -o /usr/local/bin/wings
+
+sudo chmod +x /usr/local/bin/wings</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Create a node in the panel</div>
+        <ul class="bullet-list">
+          <li>Admin → Nodes → Create New</li>
+          <li>FQDN — your server's IP address</li>
+          <li>Scheme — <strong>http</strong> (no HTTPS needed)</li>
+          <li>Set RAM and Disk limits</li>
+          <li>Save → Configuration tab → copy the config.yml content</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Save Wings config</div>
+        <div class="code-block"><pre>sudo nano /etc/pterodactyl/config.yml
+<span class="comment"># paste the config from the panel</span></pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">Create systemd service</div>
+        <span class="code-label">sudo nano /etc/systemd/system/wings.service</span>
+        <div class="code-block"><pre>[Unit]
+Description=Pterodactyl Wings Daemon
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=root
+WorkingDirectory=/etc/pterodactyl
+LimitNOFILE=4096
+ExecStart=/usr/local/bin/wings
+Restart=on-failure
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target</pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <div class="step-title">Start Wings</div>
+        <div class="code-block"><pre>sudo systemctl daemon-reload
+sudo systemctl enable --now wings
+sudo systemctl status wings</pre></div>
+        <div class="note"><strong>Expected —</strong> active (running). If not: <code>sudo journalctl -u wings -f</code></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">06</div>
+      <div>
+        <div class="step-title">Verify in panel</div>
+        <div class="step-desc">Admin → Nodes. Your node should show a green heartbeat. If it stays red after 30 seconds, check the FQDN in <code>config.yml</code>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s5">
+  <div class="section-header">
+    <div><span class="section-num">05</span><div class="section-title">Create Server in Panel</div></div>
+    <div class="section-desc">With Wings connected, create a managed Purpur server through the panel UI.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Import the Purpur egg</div>
+        <div class="step-desc">Download the egg JSON from your browser:</div>
+        <div class="code-block"><pre>https://github.com/parkervcp/eggs/blob/master/game_eggs/minecraft/java/purpur/egg-purpur.json</pre></div>
+        <ul class="bullet-list">
+          <li>Admin → Nests → create a nest called "Minecraft"</li>
+          <li>Import Egg → select <code>egg-purpur.json</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Create an allocation</div>
+        <ul class="bullet-list">
+          <li>Admin → Nodes → your node → Allocations</li>
+          <li>IP: <code>0.0.0.0</code> — Port: <code>25566</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Create the server</div>
+        <ul class="bullet-list">
+          <li>Admin → Servers → Create New</li>
+          <li>Assign to your node, pick the 25566 allocation</li>
+          <li>RAM — 4096 MB minimum</li>
+          <li>Nest: Minecraft → Egg: Purpur</li>
+          <li>Version — <strong>1.21.11</strong> in startup variables → Create Server</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">Install and start</div>
+        <ul class="bullet-list">
+          <li>Click Install — wait for Wings to download Purpur</li>
+          <li>Click Start → wait for "Done!" in the console tab</li>
+          <li>Connect: <code>YOUR_SERVER_IP:25566</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s6">
+  <div class="section-header">
+    <div><span class="section-num">06</span><div class="section-title">Optimizations</div></div>
+    <div class="section-desc">Tune JVM flags, spigot.yml, paper-world-defaults.yml, and purpur.yml. These settings compound — all of them together make a real difference.</div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">JVM Flags — Aikar's Flags</div>
+        <div class="step-desc">Go to <code>https://flags.sh</code>, pick your RAM, copy the output. Paste into Admin → Servers → your server → Startup — replace the existing <code>-Xms</code> and <code>-Xmx</code> flags.</div>
+        <div class="note"><strong>Why —</strong> Tunes G1GC to reduce lag spikes. Don't write these manually, just use flags.sh.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">spigot.yml</div>
+        <div class="code-block"><pre><span class="key">world-settings:</span>
+  <span class="key">default:</span>
+    <span class="key">view-distance:</span> <span class="val">8</span>         <span class="comment"># chunks sent to client</span>
+    <span class="key">simulation-distance:</span> <span class="val">6</span>  <span class="comment"># chunks running game logic</span>
+    <span class="key">merge-radius:</span>
+      <span class="key">item:</span> <span class="val">2.5</span>
+      <span class="key">exp:</span> <span class="val">3.0</span></pre></div>
+        <div class="note"><strong>view vs simulation —</strong> view-distance is what the client sees. simulation-distance is what the server computes. Keeping simulation lower saves CPU without affecting visibility.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">paper-world-defaults.yml</div>
+        <div class="code-block"><pre><span class="key">chunks:</span>
+  <span class="key">delay-chunk-unloads-by:</span> <span class="val">10s</span>
+  <span class="key">max-auto-save-chunks-per-tick:</span> <span class="val">24</span>
+
+<span class="key">mob-spawner-tick-rate:</span> <span class="val">2</span>
+
+<span class="key">entity-per-chunk-save-limit:</span>
+  <span class="key">experience_orb:</span> <span class="val">16</span>
+  <span class="key">arrow:</span> <span class="val">16</span>
+  <span class="key">fireball:</span> <span class="val">8</span></pre></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div>
+        <div class="step-title">purpur.yml</div>
+        <div class="code-block"><pre><span class="key">settings:</span>
+  <span class="key">use-alternate-keepalive:</span> <span class="val">true</span>
+
+<span class="key">world-settings:</span>
+  <span class="key">default:</span>
+    <span class="key">mobs:</span>
+      <span class="key">villager:</span>
+        <span class="key">brain-ticks:</span> <span class="val">2</span>
+        <span class="key">lobotomize:</span>
+          <span class="key">enabled:</span> <span class="val">true</span>
+          <span class="key">check-interval:</span> <span class="val">100</span>
+      <span class="key">dolphin:</span>
+        <span class="key">disable-treasure-searching:</span> <span class="val">true</span></pre></div>
+        <div class="note"><strong>lobotomize —</strong> Disables AI for idle villagers not near a bed or workstation. Doesn't affect trading. Big CPU win on larger servers.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div>
+        <div class="step-title">Summary</div>
+        <table>
+          <tr><th>Setting</th><th>Value</th><th>Why</th></tr>
+          <tr><td>view-distance</td><td>8</td><td>Less data sent to clients</td></tr>
+          <tr><td>simulation-distance</td><td>6</td><td>Fewer active chunks</td></tr>
+          <tr><td>merge-radius item</td><td>2.5</td><td>Fewer item entities</td></tr>
+          <tr><td>delay-chunk-unloads-by</td><td>10s</td><td>Prevents rapid load/unload</td></tr>
+          <tr><td>mob-spawner-tick-rate</td><td>2</td><td>Halves spawner overhead</td></tr>
+          <tr><td>villager brain-ticks</td><td>2</td><td>Less villager AI per second</td></tr>
+          <tr><td>lobotomize</td><td>true</td><td>Idle villagers cost nothing</td></tr>
+          <tr><td>use-alternate-keepalive</td><td>true</td><td>Handles laggy clients better</td></tr>
+          <tr><td>JVM flags</td><td>flags.sh</td><td>G1GC tuning, no lag spikes</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">FabledRuns</div>
+  <div class="footer-info">Ubuntu 24.04 · Purpur 1.21.11 · Pelican · Fabled License</div>
+</div>
+
+</body>
+</html>
